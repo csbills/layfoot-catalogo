@@ -1,12 +1,16 @@
 import commerce from '../lib/commerce';
 import Image from 'next/image';
-import Head from 'next/head'
+import Head from 'next/head';
+
+import { RiArrowDownSLine } from 'react-icons/ri';
 
 import logo from '../public/layfoot_preto.png';
 import { useEffect, useState } from 'react';
 
 export default function Home({ allProducts }) {
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [tournament, setTournament] = useState();
+  const [openDropdownTournament, setOpenDropdownTournament] = useState(false);
 
   useEffect(() => {
     console.log(allProducts)
@@ -14,7 +18,147 @@ export default function Home({ allProducts }) {
       allProducts.sort(function (a, b) {
         return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)
       }))
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    const TournamentProducts = [];
+
+    if (tournament) {
+      if (tournament.slug === 'todos') {
+        setFilteredProducts(allProducts);
+      } else {
+        allProducts.map(product => {
+          product.categories.map(cat => {
+            if (cat.slug === tournament.slug) {
+              TournamentProducts.push(product);
+            }
+          })
+        })
+        setFilteredProducts(TournamentProducts);
+      }
+    }
+  }, [tournament]);
+
+  const DropdownTournaments = () => (
+    <div className="absolute z-20">
+      <button className="inline-flex justify-center items-center w-full border-b-2 border-black p-2" onClick={() => setOpenDropdownTournament(!openDropdownTournament)}>
+        {tournament ? (<span>{tournament.name}</span>) : (<span>Campeonatos</span>)}<RiArrowDownSLine/>
+      </button>
+
+      {openDropdownTournament && (
+        <div className="border-2">
+          <div onClick={() => {
+            setTournament({ name: 'Todos', slug: 'todos' })
+            setOpenDropdownTournament(false)
+          }}>
+            <div className="py-1 bg-gray-50 cursor-pointer" >
+              <div className="group flex item-center px-4 py-2 text-sm text-gray-700
+                        hover:bg-indigo-500 hover:text-white">
+                Todos
+              </div>
+            </div>
+          </div>
+
+          <div onClick={() => {
+            setTournament({ name: 'Brasileirão', slug: 'campeonato-brasileiro' })
+            setOpenDropdownTournament(false)
+          }}>
+            <div className="py-1 bg-gray-50 cursor-pointer" >
+              <div className="group flex item-center px-4 py-2 text-sm text-gray-700
+                        hover:bg-indigo-500 hover:text-white">
+                Brasileirão
+              </div>
+            </div>
+          </div>
+
+          <div onClick={() => {
+            setTournament({ name: 'Premier League', slug: 'premier-league' })
+            setOpenDropdownTournament(false)
+          }}>
+            <div className="py-1 bg-gray-50 cursor-pointer" >
+              <div className="group flex item-center px-4 py-2 text-sm text-gray-700
+                        hover:bg-indigo-500 hover:text-white">
+                Premier League
+              </div>
+            </div>
+          </div>
+
+          <div onClick={() => {
+            setTournament({ name: 'La Liga', slug: 'la-liga' })
+            setOpenDropdownTournament(false)
+          }}>
+            <div className="py-1 bg-gray-50 cursor-pointer" >
+              <div className="group flex item-center px-4 py-2 text-sm text-gray-700
+                        hover:bg-indigo-500 hover:text-white">
+                La Liga
+              </div>
+            </div>
+          </div>
+
+          <div onClick={() => {
+            setTournament({ name: 'Ligue 1', slug: 'ligue-1' })
+            setOpenDropdownTournament(false)
+          }}>
+            <div className="py-1 bg-gray-50 cursor-pointer" >
+              <div className="group flex item-center px-4 py-2 text-sm text-gray-700
+                        hover:bg-indigo-500 hover:text-white">
+                Ligue 1
+              </div>
+            </div>
+          </div>
+
+          <div onClick={() => {
+            setTournament({ name: 'Série A', slug: 'serie-a' })
+            setOpenDropdownTournament(false)
+          }}>
+            <div className="py-1 bg-gray-50 cursor-pointer" >
+              <div className="group flex item-center px-4 py-2 text-sm text-gray-700
+                        hover:bg-indigo-500 hover:text-white">
+                Série A
+              </div>
+            </div>
+          </div>
+
+          <div onClick={() => {
+            setTournament({ name: 'Retrô', slug: 'retro' })
+            setOpenDropdownTournament(false)
+          }}>
+            <div className="py-1 bg-gray-50 cursor-pointer" >
+              <div className="group flex item-center px-4 py-2 text-sm text-gray-700
+                        hover:bg-indigo-500 hover:text-white">
+                Retrô
+              </div>
+            </div>
+          </div>
+
+          <div onClick={() => {
+            setTournament({ name: 'Outras Ligas', slug: 'outras-ligas' })
+            setOpenDropdownTournament(false)
+          }}>
+            <div className="py-1 bg-gray-50 cursor-pointer" >
+              <div className="group flex item-center px-4 py-2 text-sm text-gray-700
+                        hover:bg-indigo-500 hover:text-white">
+                Outras Ligas
+              </div>
+            </div>
+          </div>
+
+          <div onClick={() => {
+            setTournament({ name: 'NBA', slug: 'nba' })
+            setOpenDropdownTournament(false)
+          }}>
+            <div className="py-1 bg-gray-50 cursor-pointer" >
+              <div className="group flex item-center px-4 py-2 text-sm text-gray-700
+                        hover:bg-indigo-500 hover:text-white">
+                NBA
+              </div>
+            </div>
+          </div>
+
+        </div>
+      )}
+    </div>
+  )
 
   return (
     <>
@@ -30,6 +174,10 @@ export default function Home({ allProducts }) {
         <div className="flex justify-between items-center col-span-2 md:col-span-3 lg:col-span-4 xl:col-span-5 px-2">
           <h1 className="font-bold text-lg md:text-2xl uppercase">catálogo</h1>
           <span className="text-xs text-right w-1/3">{filteredProducts.length} RESULTADOS ENCONTRADOS</span>
+        </div>
+
+        <div className="col-span-2 md:col-span-3 lg:col-span-4 xl:col-span-5 mb-8">
+          <DropdownTournaments />
         </div>
 
         {filteredProducts.map((product, index) => (
