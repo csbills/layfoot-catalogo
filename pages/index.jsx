@@ -1,5 +1,6 @@
 import commerce from '../lib/commerce';
 import Image from 'next/image';
+import Head from 'next/head'
 
 import logo from '../public/layfoot_preto.png';
 import { useEffect, useState } from 'react';
@@ -15,14 +16,19 @@ export default function Home({ allProducts }) {
   }, [])
 
   return (
+    <>
+    <Head>
+      <title>Layfoot | Catálogo</title>
+      <link rel="shortcut icon" href="/fut_preto.png" />
+    </Head>
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 bg-gray-100 p-8">
 
       <div className="col-span-2 md:col-span-3 lg:col-span-4 xl:col-span-5 flex items-center justify-center">
         <Image src={logo} quality={100} width="94.5px" height="36.875px" />
       </div>
       <div className="flex justify-between items-center col-span-2 md:col-span-3 lg:col-span-4 xl:col-span-5 px-2">
-        <h1 className="font-bold text-2xl uppercase">catálogo</h1>
-        <span className="text-xs">{filteredProducts.length} RESULTADOS ENCONTRADOS</span>
+        <h1 className="font-bold text-lg md:text-2xl uppercase">catálogo</h1>
+        <span className="text-xs text-right w-1/3">{filteredProducts.length} RESULTADOS ENCONTRADOS</span>
       </div>
 
       {filteredProducts.map((product, index) => (
@@ -36,6 +42,7 @@ export default function Home({ allProducts }) {
       ))}
 
     </div>
+    </>
   )
 }
 
