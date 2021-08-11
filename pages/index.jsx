@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import commerce from '../lib/commerce';
 import Image from 'next/image';
 import Head from 'next/head';
@@ -5,19 +6,20 @@ import Head from 'next/head';
 import { RiArrowDownSLine } from 'react-icons/ri';
 
 import logo from '../public/layfoot_preto.png';
-import { useEffect, useState } from 'react';
 
 export default function Home({ allProducts }) {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [tournament, setTournament] = useState();
   const [openDropdownTournament, setOpenDropdownTournament] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    console.log(allProducts)
     setFilteredProducts(
       allProducts.sort(function (a, b) {
         return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)
       }))
+
+    setIsLoading(false);
   }, []);
 
   useEffect(() => {
@@ -42,7 +44,7 @@ export default function Home({ allProducts }) {
   const DropdownTournaments = () => (
     <div className="absolute z-20">
       <button className="inline-flex justify-center items-center w-full border-b-2 border-black p-2" onClick={() => setOpenDropdownTournament(!openDropdownTournament)}>
-        {tournament ? (<span>{tournament.name}</span>) : (<span>Campeonatos</span>)}<RiArrowDownSLine/>
+        {tournament ? (<span>{tournament.name}</span>) : (<span>Campeonatos</span>)}<RiArrowDownSLine />
       </button>
 
       {openDropdownTournament && (
@@ -160,6 +162,20 @@ export default function Home({ allProducts }) {
     </div>
   )
 
+  const Products = () => (
+    <>
+      {filteredProducts.map((product, index) => (
+        <div key={product.id} className="flex items-center flex-col bg-gray-50 shadow-lg px-2 py-4 rounded-md">
+          <img src={product.media.source} className="w-56" />
+          <div className="flex flex-col items-center justify-center flex-wrap mt-6">
+            <span className="text-xs md:text-base text-center">{product.name}</span>
+            <span className="font-bold text-xs md:text-base">{(product.price.raw).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+          </div>
+        </div>
+      ))}
+    </>
+  )
+
   return (
     <>
       <Head>
@@ -180,16 +196,15 @@ export default function Home({ allProducts }) {
           <DropdownTournaments />
         </div>
 
-        {filteredProducts.map((product, index) => (
-          <div key={product.id} className="flex items-center flex-col bg-gray-50 shadow-lg px-2 py-4 rounded-md">
-            <img src={product.media.source} className="w-56" />
-            <div className="flex flex-col items-center justify-center flex-wrap mt-6">
-              <span className="text-xs md:text-base text-center">{product.name}</span>
-              <span className="font-bold text-xs md:text-base">{(product.price.raw).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
-            </div>
+        {isLoading ? (
+          <div className="col-span-5 flex justify-center items-center">
+            <h1>Carregando...</h1>
           </div>
-        ))}
-
+        ) : (
+          <>
+            <Products />
+          </>
+        )}
       </div>
     </>
   )
@@ -197,7 +212,7 @@ export default function Home({ allProducts }) {
 
 export async function getStaticProps() {
   const { data: allProducts } = await commerce.products.list({
-    limit: 100,
+    limit: 250,
   });
 
   return {
